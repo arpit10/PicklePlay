@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>PicklePlay</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="brand-row"><span class="brand-mark">P</span><h1>PicklePlay</h1></div>
+        <p>Fast social pickleball tournaments</p>
+      </div>
+      <button id="resetApp" class="ghost-btn" title="Reset">Reset</button>
+    </header>
+
+    <main>
+      <section id="setupScreen" class="screen active">
+        <div class="hero card">
+          <span class="eyebrow">NEW SESSION</span>
+          <h2>Set up tonight's games</h2>
+          <p>Add your group, choose a format, and start playing.</p>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div><span class="step">1</span><h3>Players</h3></div>
+            <button id="addPlayer" class="small-btn">+ Add player</button>
+          </div>
+          <div id="playerList" class="player-list">
+            <div class="player-row fallback-player"><div class="avatar">1</div><input class="name-input" type="text" placeholder="Player name"/><input class="dupr-input" type="number" step="0.01" min="1" max="8" placeholder="DUPR"/><button class="remove-player" aria-label="Remove player">×</button></div>
+            <div class="player-row fallback-player"><div class="avatar">2</div><input class="name-input" type="text" placeholder="Player name"/><input class="dupr-input" type="number" step="0.01" min="1" max="8" placeholder="DUPR"/><button class="remove-player" aria-label="Remove player">×</button></div>
+            <div class="player-row fallback-player"><div class="avatar">3</div><input class="name-input" type="text" placeholder="Player name"/><input class="dupr-input" type="number" step="0.01" min="1" max="8" placeholder="DUPR"/><button class="remove-player" aria-label="Remove player">×</button></div>
+            <div class="player-row fallback-player"><div class="avatar">4</div><input class="name-input" type="text" placeholder="Player name"/><input class="dupr-input" type="number" step="0.01" min="1" max="8" placeholder="DUPR"/><button class="remove-player" aria-label="Remove player">×</button></div>
+          </div>
+          <div class="inline-actions">
+            <button id="samplePlayers" class="secondary-btn">Load sample group</button>
+            <button id="clearPlayers" class="text-btn">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head"><div><span class="step">2</span><h3>Session setup</h3></div></div>
+          <div class="grid-2">
+            <label>Courts
+              <select id="courtCount">
+                <option value="auto" selected>Auto</option>
+              </select>
+              <small id="courtHint" class="field-hint">Automatically uses the maximum courts your player count supports.</small>
+            </label>
+            <label>Games to
+              <select id="pointsTo">
+                <option value="7">7 points</option>
+                <option value="11" selected>11 points</option>
+                <option value="15">15 points</option>
+                <option value="21">21 points</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid-2">
+            <label>Scoring
+              <select id="scoringMode">
+                <option value="traditional" selected>Traditional / side-out</option>
+                <option value="rally">Rally scoring</option>
+              </select>
+              <small id="scoringHint" class="field-hint"></small>
+            </label>
+            <label><span id="roundCountLabel">Rounds</span>
+              <input id="roundCount" type="number" min="1" max="30" value="7" />
+            </label>
+          </div>
+          <div class="grid-2 single-last">
+            <label>Ranking tie-break
+              <select id="tieBreak">
+                <option value="diff" selected>Point differential</option>
+                <option value="pf">Points scored</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head"><div><span class="step">3</span><h3>Choose format</h3></div></div>
+          <div id="formatGrid" class="format-grid">
+            <button class="format-card selected" data-format="rr-rotating"><div class="format-icon">🔄</div><h4>Round Robin</h4><p>Changing partners each round with balanced rotations.</p><span class="tag">INDIVIDUAL</span></button>
+            <button class="format-card" data-format="rr-fixed"><div class="format-icon">🤝</div><h4>Fixed Partners</h4><p>Teams stay together and play a team round robin.</p><span class="tag">TEAM</span></button>
+            <button class="format-card" data-format="kings"><div class="format-icon">👑</div><h4>King's Court</h4><p>Winners move up, losers move down. Choose Challenge or Split each round.</p><span class="tag">LIVE</span></button>
+            <button class="format-card" data-format="scramble"><div class="format-icon">⚖️</div><h4>Balanced Scramble</h4><p>Uses DUPR when available to create balanced games.</p><span class="tag">SMART</span></button>
+            <button class="format-card" data-format="shootout"><div class="format-icon">🔥</div><h4>Shootout</h4><p>Players are progressively matched near the standings.</p><span class="tag">COMPETITIVE</span></button>
+            <button class="format-card" data-format="random"><div class="format-icon">🎲</div><h4>Random Mixer</h4><p>Random partners and opponents with repeat avoidance.</p><span class="tag">CASUAL</span></button>
+          </div>
+          <div id="formatNote" class="format-note" aria-live="polite"></div>
+          <div id="kingNamingOptions" class="king-naming-options">
+            <div class="king-naming-copy">
+              <strong>What should we call this session?</strong>
+              <span>This only changes the wording, not the game rules.</span>
+            </div>
+            <div class="king-title-toggle">
+              <button type="button" class="king-title-btn selected" data-king-title="king">King's Court</button>
+              <button type="button" class="king-title-btn" data-king-title="queen">Queen's Court</button>
+              <button type="button" class="king-title-btn" data-king-title="royal">Royal Court</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="startTournament" class="primary-btn large">Generate tournament</button>
+        <p id="setupError" class="error-text"></p>
+      </section>
+
+      <section id="tournamentScreen" class="screen">
+        <div class="session-head card">
+          <div>
+            <span id="formatBadge" class="badge"></span>
+            <h2 id="sessionTitle">Tournament</h2>
+            <p id="sessionMeta"></p>
+          </div>
+          <div class="session-actions"><button id="shareSession" class="secondary-btn">Share live session</button><button id="editSetup" class="secondary-btn">Edit setup</button></div>
+        </div>
+
+        <div id="viewerBanner" class="viewer-banner">👀 Live view • Scores are controlled by the organizer</div>
+        <div id="sharePanel" class="card share-panel">
+          <div class="share-panel-head"><div><span class="eyebrow">LIVE SESSION</span><h3>Scan to follow this tournament</h3><p>Anyone who scans can see games, scores, standings and results on their own phone.</p></div><button id="closeSharePanel" class="text-btn">Close</button></div>
+          <div class="share-grid">
+            <div id="qrCode" class="qr-code"></div>
+            <div class="share-details"><label>Viewer link<input id="shareUrl" type="text" readonly></label><div class="share-actions"><button id="copyShareLink" class="secondary-btn">Copy link</button><button id="refreshShare" class="secondary-btn">Sync now</button></div><small id="shareStatus">Not connected</small></div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="games">Games</button>
+          <button class="tab" data-tab="standings">Standings</button>
+          <button class="tab" data-tab="results">Results</button>
+          <button class="tab" data-tab="rules">Rules</button>
+        </div>
+
+        <div id="gamesTab" class="tab-panel active">
+          <div class="round-nav card">
+            <button id="prevRound" class="round-arrow">‹</button>
+            <div><span id="roundTypeLabel">ROUND</span><strong id="roundLabel">1 / 1</strong></div>
+            <button id="nextRound" class="round-arrow">›</button>
+          </div>
+          <div id="roundSummary" class="round-summary"></div>
+          <div id="gamesList" class="games-list"></div>
+          <div id="kingRoundChoice" class="king-options">
+            <h4>This round: King Court</h4>
+            <p>Choose how the four players on the King Court should pair up for this round.</p>
+            <div class="king-mode-toggle">
+              <button type="button" class="king-mode-btn selected" data-round-king-mode="challenge"><strong>⚔️ Challenge</strong><span>Winning pairs stay together and face each other.</span></button>
+              <button type="button" class="king-mode-btn" data-round-king-mode="split"><strong>🔀 Split</strong><span>The four King Court players are mixed into new partners.</span></button>
+            </div>
+          </div>
+          <button id="completeRound" class="primary-btn large">Save scores & next round</button>
+          <p id="roundActionError" class="error-text"></p>
+        </div>
+
+        <div id="standingsTab" class="tab-panel">
+          <div class="card leaderboard-card">
+            <div class="section-head"><div><h3>Live standings</h3><p>Updates as scores are entered</p></div></div>
+            <div class="table-wrap">
+              <table>
+                <thead id="standingsHead"><tr><th>#</th><th>Player</th><th>W-L</th><th>PF</th><th>PA</th><th>+/-</th><th>Win%</th></tr></thead>
+                <tbody id="standingsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultsTab" class="tab-panel">
+          <div id="podium" class="podium card"></div>
+          <div class="card">
+            <h3>Session awards</h3>
+            <div id="awards" class="awards"></div>
+          </div>
+          <button id="copyResults" class="primary-btn large">Copy results</button>
+        </div>
+
+        <div id="rulesTab" class="tab-panel">
+          <div class="card rules-intro">
+            <span class="eyebrow">QUICK REFERENCE</span>
+            <h3>How each format works</h3>
+            <p>Use this during the session whenever someone needs a refresher.</p>
+          </div>
+          <div class="rules-grid">
+            <article class="rule-card"><div class="rule-title"><span>🔄</span><div><h4>Round Robin</h4><small>Individual</small></div></div><p>Partners rotate between rounds. Each player earns their own wins, points for and point differential.</p><ul><li>Play the scheduled match on your assigned court.</li><li>Enter the final score after every game.</li><li>Standings rank players individually.</li></ul></article>
+            <article class="rule-card"><div class="rule-title"><span>🤝</span><div><h4>Fixed Partners</h4><small>Team</small></div></div><p>Choose a partner and stay together for the session. Teams rotate through opponents.</p><ul><li>Your team stays intact every round.</li><li>Team results determine the standings.</li></ul></article>
+            <article class="rule-card"><div class="rule-title"><span>👑</span><div><h4>King / Queen / Royal Court</h4><small>Team movement</small></div></div><p>Winners move toward the top court and losers move down. On the current top court, choose Challenge or Split before play.</p><ul><li><strong>Challenge:</strong> qualifying pairs stay together.</li><li><strong>Split:</strong> the four top-court players are remixed.</li><li>The final top-court winning pair earns the crown.</li></ul></article>
+            <article class="rule-card"><div class="rule-title"><span>⚖️</span><div><h4>Balanced Scramble</h4><small>Individual</small></div></div><p>Partners change while the app uses DUPR when available to make the two teams as balanced as possible.</p></article>
+            <article class="rule-card featured-rule"><div class="rule-title"><span>🔥</span><div><h4>Shootout</h4><small>Individual promotion / relegation</small></div></div><p>Each stage contains <strong>two games per court</strong>. The four players change partners between Game 1 and Game 2.</p><ul><li>Add the points each individual scored across both games.</li><li>Top 2 performers on a court stay/move up.</li><li>Bottom 2 stay/move down.</li><li>Incoming players are mixed with the holdovers; players who continuously remain at the same level do not immediately re-partner with each other.</li><li>The final top court produces one individual Shootout Champion.</li></ul><div class="rule-tip"><strong>Recommended:</strong> Shootout can run long. Rally scoring or games to 7 keep stages moving.</div></article>
+            <article class="rule-card"><div class="rule-title"><span>🎲</span><div><h4>Random Mixer</h4><small>Casual</small></div></div><p>Partners and opponents are shuffled with repeat avoidance. Great when variety matters more than seeding.</p></article>
+          </div>
+          <div class="card scoring-rules">
+            <span class="eyebrow">SCORING</span><h3>Traditional vs rally scoring</h3>
+            <div class="scoring-grid">
+              <div class="scoring-card"><h4>Traditional / side-out</h4><p>Only the serving team can score a point.</p><ul><li>If the serving team wins the rally, they score 1 point and continue serving.</li><li>If the receiving team wins the rally, the score does not change. They only win the serve.</li><li>Normal doubles service order applies.</li><li>Traditional games are commonly played to 11 and usually require win by 2, unless your group chooses otherwise.</li></ul><p><strong>Example:</strong> Team A is serving at 4-2. Team B wins the rally. The score stays <strong>4-2</strong>, and Team B gets the serve.</p></div>
+              <div class="scoring-card"><h4>PicklePlay Rally Scoring (Fixed-Side)</h4><p>Every rally awards a point, no matter who served.</p><ul><li>The team that wins the rally scores 1 point.</li><li>The team that wins the rally also serves the next rally.</li><li>Players stay on their starting left/right side for the entire game. They do <strong>not</strong> switch sides during the game.</li><li>If a team&apos;s score is <strong>even</strong>, the <strong>right-side player</strong> serves.</li><li>If a team&apos;s score is <strong>odd</strong>, the <strong>left-side player</strong> serves.</li><li>Games end at the selected score (such as 7 or 11) and are <strong>win by 1</strong>.</li></ul><p><strong>Example:</strong> Team A leads <strong>4-2</strong>. Team B wins the rally, so the score becomes <strong>4-3</strong>. Team B now serves, and because <strong>3 is odd</strong>, Team B&apos;s <strong>left-side player</strong> serves. Team B wins the next rally, so the score becomes <strong>4-4</strong>. Team B serves again, and because <strong>4 is even</strong>, Team B&apos;s <strong>right-side player</strong> serves. Team B&apos;s players never switch sides.</p><p><strong>Why use it?</strong> Games usually finish faster and are easier to time, which works especially well for Shootout.</p></div>
+            </div>
+            <div class="rules-note">This is <strong>PicklePlay&apos;s simplified fixed-side rally-scoring format</strong>. Some clubs or organizations may use a different rally-scoring system. If your group wants a house variation, agree on it before starting and use it consistently for the whole session.</div>
+          </div>
+        </div>
+      </section>
+    <noscript><div class="card" style="border-color:#f3b3aa;background:#fff5f3;color:#7f1d1d"><strong>Interactive mode is unavailable in this file preview.</strong><br>Open this app as a website in Safari to add players, generate games, enter scores and use standings.</div></noscript>
+    </main>
+  </div>
+
+  <template id="playerRowTemplate">
+    <div class="player-row">
+      <div class="avatar"></div>
+      <input class="name-input" type="text" placeholder="Player name" />
+      <input class="dupr-input" type="number" step="0.01" min="1" max="8" placeholder="DUPR" />
+      <button class="remove-player" aria-label="Remove player">×</button>
+    </div>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="cloud-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
