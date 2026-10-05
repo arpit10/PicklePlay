@@ -32,7 +32,7 @@ function init(){
 
 function bind(){
   $('#addPlayer').onclick=()=>{state.players.push({name:'',dupr:''});renderPlayers();updateCourtOptions();renderFormatNote()};
-  $('#samplePlayers').onclick=()=>{state.players=['Arpit','Jatin','Paras','Avit','Bhavi','Richa','Ashu','Jay'].map((n,i)=>({name:n,dupr:[3.82,4.05,3.61,3.95,3.5,3.68,3.76,3.58][i]}));renderPlayers();updateCourtOptions();renderFormatNote()};
+  $('#samplePlayers').onclick=()=>{state.players=['Arpit','Dobby','Harry','Ron','Hermione','Sirius','Albus','Lupin'].map((n,i)=>({name:n,dupr:[3.82,4.05,3.61,3.95,3.5,3.68,3.76,3.58][i]}));renderPlayers();updateCourtOptions();renderFormatNote()};
   $('#clearPlayers').onclick=()=>{state.players=[{name:'',dupr:''},{name:'',dupr:''},{name:'',dupr:''},{name:'',dupr:''}];renderPlayers();updateCourtOptions();renderFormatNote()};
   $('#startTournament').onclick=startTournament;
   $('#editSetup').onclick=()=>showScreen('setup');
